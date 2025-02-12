@@ -1,2 +1,4 @@
 /hotels-backend/node_modules
 /hotels-front/node_modules
+/hotels-backend/.env
+/hotels-front/.env
