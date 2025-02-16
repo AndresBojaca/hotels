@@ -2,24 +2,36 @@ import { useContext } from "react";
 import { HotelContext } from "../context/HotelContext";
 import { DataTable } from "./DataTable";
 import { ColumnDef } from "@tanstack/react-table";
-import { Hotel } from "../libs/types";
+import { HotelMongo } from "../libs/types";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import { Star } from "lucide-react";
 
 
 const HotelList = () => {
   const { hotels, deleteHotel } = useContext(HotelContext);
 
-  const columns: ColumnDef<Hotel>[] = [
+  const columns: ColumnDef<HotelMongo>[] = [
+    {
+      header: "#",
+      accessorKey: "_id",
+      cell: ({ row }) => <span className="text-gray-400 text-xs">{parseInt(row.id) + 1}</span>,
+    },
     {
       accessorKey: "name",
       header: "Nombre",
       cell: ({ row }) =>
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-gray-200 rounded-lg overflow-hidden">
-            <img src="" alt="" className="w-40 h-40 object-cover" />
+            <img src="" alt="" className="object-cover" />
           </div>
-          <span className="font-bold">{row.getValue("name")}</span>
+          <div>
+            <span className="font-bold">{row.getValue("name")}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-xs">4.5</span>
+              <Star size={16} className="text-yellow-400" />
+            </div>
+          </div>
         </div>
       ,
     },

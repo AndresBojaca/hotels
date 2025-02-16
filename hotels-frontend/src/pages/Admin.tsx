@@ -12,8 +12,8 @@ const Admin = () => {
   const AdminCard = ({ to, icon: Icon, label }: { to: string; icon: React.ElementType; label: string }) => (
     <Link to={to}>
       <div className="flex flex-col border-dashed gap-2 border-2 h-40 w-40 rounded-lg bg-transparent items-center justify-center hover:border-gray-400 transition-colors">
-        <Icon size={64} className="text-gray-600" />
-        <span className="text-sm text-gray-600">{label}</span>
+        <Icon size={64} className="" />
+        <span className="text-sm">{label}</span>
       </div>
     </Link>
   );

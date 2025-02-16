@@ -27,6 +27,7 @@ export const HotelProvider = ({ children }: { children: ReactNode }) => {
       try {
         const response = await api.get("/hotels"); // Llama al backend para obtener los hoteles
         setHotels(response.data); // Actualiza el estado global
+        console.log("Hoteles cargados:", response.data);
       } catch (error) {
         console.error("Error al obtener los hoteles:", error);
       }
