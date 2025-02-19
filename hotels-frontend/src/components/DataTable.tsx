@@ -13,8 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
-import { Columns } from "lucide-react"
+import { ChevronDown, ChevronLeft, ChevronRight, PlusCircle, Columns } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,19 +32,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { useNavigate } from "react-router-dom"
+
+type DataTableSettings = {
+  template?: "basic" | "withFilterPagination" | "withFilterPaginationAdd"
+  newRecordPath?: string
+}
+
 type DataTableProps<TData> = {
   data: TData[]
   columns: ColumnDef<TData>[]
+  settings?: DataTableSettings
 }
 
-export function DataTable<TData>({ data, columns }: DataTableProps<TData>) {
+export function DataTable<TData>({ data, columns, settings = { template: "basic" } }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  const navigate = useNavigate()
 
   const table = useReactTable({
     data,
@@ -68,46 +74,56 @@ export function DataTable<TData>({ data, columns }: DataTableProps<TData>) {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between py-4">
-        <Input
-          placeholder="Buscar..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <div className="flex items-center space-x-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              <Columns /> <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        
+      {(settings.template === "withFilterPagination" || settings.template === "withFilterPaginationAdd") && (
+        <div className="flex justify-between py-4">
+          <div className="flex items-center space-x-2">
+            <Input
+              placeholder="Buscar..."
+              value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("name")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+            {settings.template === "withFilterPaginationAdd" && (
+              <Button
+                variant="outline"
+                className="text-muted-foreground border border-dashed"
+                onClick={() => settings.newRecordPath && navigate(settings.newRecordPath)}
+              >
+                Nuevo
+                <PlusCircle className="ml-2" />
+              </Button>
+            )}
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                <Columns /> <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -119,9 +135,9 @@ export function DataTable<TData>({ data, columns }: DataTableProps<TData>) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -158,26 +174,28 @@ export function DataTable<TData>({ data, columns }: DataTableProps<TData>) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight />
-          </Button>
+      {(settings.template === "withFilterPagination" || settings.template === "withFilterPaginationAdd") && (
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight />
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

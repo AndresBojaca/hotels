@@ -87,7 +87,11 @@ const HotelList = () => {
       {hotels.length === 0 ? (
         <p>No hay hoteles registrados.</p>
       ) : (
-        <DataTable data={hotels} columns={columns} />
+        <DataTable data={hotels} columns={columns} 
+        settings={{
+          template: "withFilterPaginationAdd",
+          newRecordPath: "/admin/hotels/new-hotel",
+        }} />
       )}
     </div>
   );

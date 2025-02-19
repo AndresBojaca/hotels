@@ -1,10 +1,22 @@
+export type Room = {
+    _id: number;
+    baseCost: number;
+    taxes: number;
+    type: string;
+    roomLocation: string;
+    isRoomActive: boolean;
+  };
+
 export type Hotel = {
     _id: number;
     name: string;
     location: string;
     price: number;
-    rooms: any[];
     isActive: boolean;
+    rooms: Room[];
+    images?: string[];
+    rating?: number;
+    amenities?: string[];
 }
 
 export type HotelMongo = {
@@ -12,6 +24,9 @@ export type HotelMongo = {
     name: string;
     location: string;
     price: number;
-    rooms: any[];
     isActive: boolean;
+    rooms: Room[];
+    images?: string[];
+    rating?: number;
+    amenities?: string[];
 }

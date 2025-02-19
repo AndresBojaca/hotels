@@ -11,6 +11,9 @@ const HotelSchema = new mongoose.Schema({
     },
   ],
   isActive: { type: Boolean, default: true },
+  images: [{ type: String }],
+  rating: { type: Number, min: 0, max: 5 },
+  amenities: [{ type: String }]
 });
 
 module.exports = mongoose.model("Hotel", HotelSchema);
